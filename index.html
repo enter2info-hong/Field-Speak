@@ -173,6 +173,12 @@
               <input id="aiKey" type="password" autocomplete="off" placeholder="ai.google.dev에서 발급">
               <small class="setting-note">키는 이 기기에만 저장됩니다. 답변 문장은 Google Gemini로 전송되어 평가됩니다.</small>
             </label>
+            <div class="data-row">
+              <button id="exportData" type="button">학습 이력 내보내기</button>
+              <button id="importData" class="secondary" type="button">불러오기</button>
+              <input id="importFile" type="file" accept="application/json,.json" class="hidden">
+            </div>
+            <small id="dataStatus" class="setting-note"></small>
             <button id="installApp" class="install-button hidden" type="button">홈 화면에 설치</button>
           </div>
         </section>

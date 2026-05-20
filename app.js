@@ -780,6 +780,86 @@ function saveSettings() {
   }));
 }
 
+const EXPORT_KEYS = [
+  "fieldspeak-review",
+  "fieldspeak-study-logs",
+  "fieldspeak-streak",
+  "fieldspeak-last-study",
+  "fieldspeak-settings"
+];
+
+function setDataStatus(message, isError) {
+  const el = $("#dataStatus");
+  if (!el) return;
+  el.textContent = message || "";
+  el.style.color = isError ? "var(--danger)" : "var(--muted)";
+}
+
+function buildExportPayload() {
+  const data = {};
+  for (const key of EXPORT_KEYS) {
+    const value = localStorage.getItem(key);
+    if (value !== null) data[key] = value;
+  }
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith("fieldspeak-completed-")) {
+      data[key] = localStorage.getItem(key);
+    }
+  }
+  return {
+    app: "FieldSpeak",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    data
+  };
+}
+
+function exportLearningHistory() {
+  const payload = buildExportPayload();
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const stamp = todayKey();
+  a.href = url;
+  a.download = `fieldspeak-backup-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const total = Object.keys(payload.data).length;
+  setDataStatus(`${total}개 항목을 ${a.download} 으로 저장했습니다.`);
+}
+
+function importLearningHistory(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(String(reader.result || ""));
+      if (parsed.app !== "FieldSpeak" || !parsed.data || typeof parsed.data !== "object") {
+        throw new Error("FieldSpeak 백업 파일이 아닙니다.");
+      }
+      let count = 0;
+      for (const [key, value] of Object.entries(parsed.data)) {
+        if (typeof value !== "string") continue;
+        if (!key.startsWith("fieldspeak-")) continue;
+        localStorage.setItem(key, value);
+        count += 1;
+      }
+      loadSettings();
+      migrateReviewItems();
+      renderScenario();
+      renderReview();
+      setDataStatus(`${count}개 항목을 불러왔습니다.`);
+    } catch (err) {
+      setDataStatus(`불러오기 실패: ${err.message}`, true);
+    }
+  };
+  reader.onerror = () => setDataStatus("파일을 읽을 수 없습니다.", true);
+  reader.readAsText(file);
+}
+
 function saveAiKey() {
   if (state.aiKey) {
     localStorage.setItem("fieldspeak-ai-key", state.aiKey);
@@ -917,6 +997,16 @@ $("#aiEnabled").addEventListener("change", (event) => {
 $("#aiKey").addEventListener("change", (event) => {
   state.aiKey = event.target.value.trim();
   saveAiKey();
+});
+
+$("#exportData").addEventListener("click", exportLearningHistory);
+
+$("#importData").addEventListener("click", () => $("#importFile").click());
+
+$("#importFile").addEventListener("change", (event) => {
+  const file = event.target.files && event.target.files[0];
+  importLearningHistory(file);
+  event.target.value = "";
 });
 $("#saveReview").addEventListener("click", saveForReview);
 $("#micButton").addEventListener("click", startSpeechInput);

@@ -19,7 +19,9 @@ const requiredHtmlIds = [
   "installApp",
   "micButton",
   "aiEnabled",
-  "aiKey"
+  "aiKey",
+  "exportData",
+  "importData"
 ];
 
 const requiredJsTokens = [
@@ -42,6 +44,9 @@ const requiredJsTokens = [
   "async function getAIFeedback",
   "GEMINI_MODEL",
   "fieldspeak-ai-key",
+  "function exportLearningHistory",
+  "function importLearningHistory",
+  "EXPORT_KEYS",
   "serviceWorker",
   "beforeinstallprompt"
 ];

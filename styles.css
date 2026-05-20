@@ -743,6 +743,16 @@ body.dark .settings-list input[type="password"] {
   font-weight: 500;
 }
 
+.data-row {
+  display: flex;
+  gap: 8px;
+}
+
+.data-row button {
+  flex: 1;
+  min-height: 42px;
+}
+
 @media (max-width: 460px) {
   .phone-shell {
     padding: 0;
