@@ -355,11 +355,15 @@ const state = {
   deferredInstallPrompt: null,
   aiEnabled: false,
   aiKey: "",
-  aiRequestId: 0
+  aiRequestId: 0,
+  ttsEnabled: false,
+  ttsVoice: "en-US-Neural2-D",
+  ttsAudio: null
 };
 
 const GEMINI_MODEL = "gemini-2.5-flash";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const CLOUD_TTS_ENDPOINT = "https://texttospeech.googleapis.com/v1/text:synthesize";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -595,18 +599,53 @@ async function renderFeedback() {
   showFeedback(getFeedback(answer));
 }
 
-function speak(text, rate = 0.85) {
+function speakBrowser(text, rate) {
   if (!("speechSynthesis" in window)) {
     alert("이 브라우저는 스피커 음성 재생을 지원하지 않습니다.");
     return;
   }
-
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "en-US";
   utterance.rate = rate;
   utterance.pitch = 1;
   window.speechSynthesis.speak(utterance);
+}
+
+async function speakCloud(text, rate) {
+  const response = await fetch(`${CLOUD_TTS_ENDPOINT}?key=${encodeURIComponent(state.aiKey)}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      input: { text },
+      voice: { languageCode: "en-US", name: state.ttsVoice },
+      audioConfig: { audioEncoding: "MP3", speakingRate: rate }
+    })
+  });
+  if (!response.ok) {
+    const errText = await response.text().catch(() => "");
+    throw new Error(`Cloud TTS ${response.status}: ${errText.slice(0, 160)}`);
+  }
+  const data = await response.json();
+  if (!data.audioContent) throw new Error("Cloud TTS 응답에 오디오가 없습니다.");
+  if (state.ttsAudio) {
+    try { state.ttsAudio.pause(); } catch (err) { /* noop */ }
+  }
+  const audio = new Audio(`data:audio/mp3;base64,${data.audioContent}`);
+  state.ttsAudio = audio;
+  await audio.play();
+}
+
+function speak(text, rate = 0.85) {
+  if (state.ttsEnabled && state.aiKey) {
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    speakCloud(text, rate).catch((err) => {
+      console.warn("Cloud TTS failed, falling back to browser TTS:", err);
+      speakBrowser(text, rate);
+    });
+    return;
+  }
+  speakBrowser(text, rate);
 }
 
 const LEITNER_INTERVAL_DAYS = [1, 3, 7, 14, 30];
@@ -764,10 +803,14 @@ function loadSettings() {
   if (saved.dark) document.body.classList.add("dark");
   state.aiEnabled = Boolean(saved.aiEnabled);
   state.aiKey = localStorage.getItem("fieldspeak-ai-key") || "";
+  state.ttsEnabled = Boolean(saved.ttsEnabled);
+  if (typeof saved.ttsVoice === "string" && saved.ttsVoice) state.ttsVoice = saved.ttsVoice;
   $("#level").value = state.level;
   $("#duration").value = String(state.duration);
   $("#aiEnabled").checked = state.aiEnabled;
   $("#aiKey").value = state.aiKey;
+  $("#ttsEnabled").checked = state.ttsEnabled;
+  $("#ttsVoice").value = state.ttsVoice;
   document.querySelector(".brand-row h1").textContent = `오늘 ${state.duration}분`;
 }
 
@@ -776,7 +819,9 @@ function saveSettings() {
     level: state.level,
     duration: state.duration,
     dark: document.body.classList.contains("dark"),
-    aiEnabled: state.aiEnabled
+    aiEnabled: state.aiEnabled,
+    ttsEnabled: state.ttsEnabled,
+    ttsVoice: state.ttsVoice
   }));
 }
 
@@ -991,6 +1036,16 @@ $("#submitAnswer").addEventListener("click", () => { renderFeedback(); });
 
 $("#aiEnabled").addEventListener("change", (event) => {
   state.aiEnabled = event.target.checked;
+  saveSettings();
+});
+
+$("#ttsEnabled").addEventListener("change", (event) => {
+  state.ttsEnabled = event.target.checked;
+  saveSettings();
+});
+
+$("#ttsVoice").addEventListener("change", (event) => {
+  state.ttsVoice = event.target.value;
   saveSettings();
 });
 

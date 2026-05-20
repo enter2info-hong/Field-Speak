@@ -21,7 +21,9 @@ const requiredHtmlIds = [
   "aiEnabled",
   "aiKey",
   "exportData",
-  "importData"
+  "importData",
+  "ttsEnabled",
+  "ttsVoice"
 ];
 
 const requiredJsTokens = [
@@ -47,6 +49,8 @@ const requiredJsTokens = [
   "function exportLearningHistory",
   "function importLearningHistory",
   "EXPORT_KEYS",
+  "async function speakCloud",
+  "CLOUD_TTS_ENDPOINT",
   "serviceWorker",
   "beforeinstallprompt"
 ];

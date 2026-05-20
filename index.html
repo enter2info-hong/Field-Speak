@@ -168,10 +168,23 @@
               AI Coach 사용 (Gemini)
               <input id="aiEnabled" type="checkbox">
             </label>
+            <label class="ai-toggle">
+              고품질 TTS 사용 (Cloud TTS)
+              <input id="ttsEnabled" type="checkbox">
+            </label>
             <label>
-              Gemini API 키
+              TTS 음성
+              <select id="ttsVoice">
+                <option value="en-US-Neural2-D">en-US-Neural2-D (남성)</option>
+                <option value="en-US-Neural2-F">en-US-Neural2-F (여성)</option>
+                <option value="en-US-Studio-Q">en-US-Studio-Q (남성, 고급)</option>
+                <option value="en-US-Studio-O">en-US-Studio-O (여성, 고급)</option>
+              </select>
+            </label>
+            <label>
+              Gemini / Cloud TTS API 키
               <input id="aiKey" type="password" autocomplete="off" placeholder="ai.google.dev에서 발급">
-              <small class="setting-note">키는 이 기기에만 저장됩니다. 답변 문장은 Google Gemini로 전송되어 평가됩니다.</small>
+              <small class="setting-note">키는 이 기기에만 저장됩니다. 답변 문장은 Google Gemini로, 발화 텍스트는 Cloud TTS로 전송됩니다. Cloud TTS 사용 시 Google Cloud 콘솔에서 Text-to-Speech API를 활성화하세요.</small>
             </label>
             <div class="data-row">
               <button id="exportData" type="button">학습 이력 내보내기</button>
