@@ -27,7 +27,16 @@ const requiredJsTokens = [
   "Handover Ready",
   "Ask Maintenance",
   "Detroit Daily",
+  "PLC I/O Check",
+  "Robot Home Position",
+  "Conveyor Jam",
+  "Safety Interlock",
+  "Customer Handover Meeting",
   "function completeMission",
+  "function migrateReviewItems",
+  "function getDueReviewItems",
+  "function markReviewResult",
+  "LEITNER_INTERVAL_DAYS",
   "serviceWorker",
   "beforeinstallprompt"
 ];

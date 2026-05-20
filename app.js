@@ -29,6 +29,21 @@ const curriculum = {
         intermediate: "before handover / should take",
         advanced: "confirm the sequence is stable"
       }
+    },
+    {
+      title: "Robot Home Position",
+      ko: "사이클 시작 전 로봇이 홈 포지션에 없습니다. 원인을 확인하고 홈으로 복귀시키겠다고 말하세요.",
+      prompt: "The robot did not start the cycle. What is going on?",
+      targets: {
+        beginner: "The robot is not at the home position. I will send it home.",
+        intermediate: "The robot is not at the home position, so the cycle cannot start. I will move it home and try again.",
+        advanced: "The robot is off the home position, which is blocking the cycle start. I will jog it home, clear the alarm, and re-run the start sequence."
+      },
+      hints: {
+        beginner: "not at home position / send it home",
+        intermediate: "cycle cannot start / move it home",
+        advanced: "jog it home / clear the alarm / start sequence"
+      }
     }
   ],
   troubleshooting: [
@@ -46,6 +61,51 @@ const curriculum = {
         intermediate: "I/O signal / wiring and sensor",
         advanced: "input status / sensor alignment"
       }
+    },
+    {
+      title: "PLC I/O Check",
+      ko: "PLC 입력 상태가 예상과 다릅니다. 어떤 입력을 확인하고 어떻게 모니터링할지 설명하세요.",
+      prompt: "Can you check why the PLC is not stepping forward?",
+      targets: {
+        beginner: "I will check the PLC inputs. One signal is missing.",
+        intermediate: "I will check the PLC input status. One of the sensor inputs is not coming in.",
+        advanced: "I will monitor the PLC input table on the HMI. One sensor input is not transitioning, so the step condition is not met."
+      },
+      hints: {
+        beginner: "check the PLC inputs / signal is missing",
+        intermediate: "input status / not coming in",
+        advanced: "monitor the input table / step condition"
+      }
+    },
+    {
+      title: "Conveyor Jam",
+      ko: "컨베이어에 부품이 끼었습니다. 라인을 멈추고 안전하게 부품을 제거하겠다고 알리세요.",
+      prompt: "The conveyor stopped again. What happened?",
+      targets: {
+        beginner: "A part is stuck on the conveyor. I need to stop the line and remove it.",
+        intermediate: "A part is jammed on the conveyor. Please stop the line so I can remove it safely.",
+        advanced: "There is a part jammed between the guides. I need to stop the line, lock it out, and clear the jam before we restart."
+      },
+      hints: {
+        beginner: "part is stuck / stop the line",
+        intermediate: "jammed on the conveyor / remove it safely",
+        advanced: "lock it out / clear the jam before restart"
+      }
+    },
+    {
+      title: "Safety Interlock",
+      ko: "안전 도어 인터록이 풀리지 않아 사이클이 시작되지 않습니다. 도어와 리셋 절차를 설명하세요.",
+      prompt: "Why won't the machine start? The start button does nothing.",
+      targets: {
+        beginner: "The safety door is open. Please close it and press reset.",
+        intermediate: "The safety interlock is not engaged. Please close the door fully and press the reset button.",
+        advanced: "The safety interlock circuit is open, so the start command is blocked. We need to close the door, confirm the interlock, then reset the safety relay before starting."
+      },
+      hints: {
+        beginner: "safety door is open / press reset",
+        intermediate: "interlock is not engaged / close the door fully",
+        advanced: "interlock circuit is open / reset the safety relay"
+      }
     }
   ],
   factory: [
@@ -62,6 +122,21 @@ const curriculum = {
         beginner: "maintenance person / who should I talk to",
         intermediate: "maintenance lead / who should I contact",
         advanced: "coordinate with / point me to"
+      }
+    },
+    {
+      title: "Customer Handover Meeting",
+      ko: "고객 인수인계 미팅에서 오늘 완료한 작업, 남은 항목, 다음 단계를 정리해 보고하세요.",
+      prompt: "Could you walk us through what is ready for handover today?",
+      targets: {
+        beginner: "Today we finished the setup and the test cycle. One small item is left for tomorrow.",
+        intermediate: "Today we completed the setup and a full test cycle. One adjustment is still open, and we plan to finish it tomorrow.",
+        advanced: "Today we completed the mechanical setup, the I/O check, and a full test cycle. One minor sensor adjustment is still open, and we plan to close it tomorrow before final sign-off."
+      },
+      hints: {
+        beginner: "finished the setup / left for tomorrow",
+        intermediate: "completed the test cycle / still open / tomorrow",
+        advanced: "mechanical setup / minor adjustment / final sign-off"
       }
     }
   ],
@@ -120,6 +195,18 @@ const phraseBank = {
       beginner: ["We need to check it before handover.", "I need to confirm it first."],
       intermediate: ["We need to confirm this before handover.", "I want to check the sequence before handover."],
       advanced: ["Before handover, I would like to verify that the sequence is stable and repeatable.", "We should confirm the full cycle before we hand over the equipment."]
+    },
+    {
+      ko: "로봇이 홈 포지션에 없습니다.",
+      beginner: ["The robot is not at home.", "The robot is not in home position."],
+      intermediate: ["The robot is not at the home position.", "The robot is off the home position right now."],
+      advanced: ["The robot is off the home position, so the cycle start is blocked.", "Until the robot returns to home, the start sequence will not arm."]
+    },
+    {
+      ko: "홈으로 보내고 다시 시작하겠습니다.",
+      beginner: ["I will send it home and try again.", "Let me move it home first."],
+      intermediate: ["I will jog the robot home and start the cycle again.", "Let me bring it back to home and re-run the sequence."],
+      advanced: ["I will jog the robot back to home, clear the alarm, and re-run the start sequence.", "Once it is back at home, I will confirm the alarm is cleared before restarting."]
     }
   ],
   troubleshooting: [
@@ -140,6 +227,36 @@ const phraseBank = {
       beginner: ["I need to check the alarm first.", "Please wait. I will check the alarm."],
       intermediate: ["I need to check the cause of the alarm first.", "Please wait while I check the HMI alarm."],
       advanced: ["Before resetting the alarm, I would like to verify the root cause on the HMI.", "I do not want to reset it until we understand what triggered the alarm."]
+    },
+    {
+      ko: "PLC 입력 상태를 확인하겠습니다.",
+      beginner: ["I will check the PLC inputs.", "Let me check the input signals."],
+      intermediate: ["I will check the PLC input status on the HMI.", "Let me monitor the input signals during the cycle."],
+      advanced: ["I will monitor the PLC input table to see which signal is not transitioning.", "Let me watch the input status live and find the missing step condition."]
+    },
+    {
+      ko: "컨베이어에 부품이 끼었습니다.",
+      beginner: ["A part is stuck on the conveyor.", "There is a jam on the conveyor."],
+      intermediate: ["A part is jammed on the conveyor.", "Something is stuck between the guides."],
+      advanced: ["A part is jammed between the guides on the conveyor.", "There is a jam that is blocking the next station."]
+    },
+    {
+      ko: "라인을 멈추고 안전하게 제거하겠습니다.",
+      beginner: ["Please stop the line. I will remove it.", "I need to stop the line to clear it."],
+      intermediate: ["Please stop the line so I can remove it safely.", "Let me stop the line and clear the jam."],
+      advanced: ["I need to stop the line, lock it out, and clear the jam before we restart.", "Once the line is stopped and locked out, I will safely remove the part."]
+    },
+    {
+      ko: "안전 인터록이 풀리지 않았습니다.",
+      beginner: ["The safety door is open.", "The interlock is not closed."],
+      intermediate: ["The safety interlock is not engaged.", "The door is not fully closed, so the interlock is open."],
+      advanced: ["The safety interlock circuit is open, so the start command is blocked.", "Until the interlock is engaged, the PLC will not arm the start sequence."]
+    },
+    {
+      ko: "도어를 닫고 리셋하겠습니다.",
+      beginner: ["Please close the door and press reset.", "Close the door, then reset."],
+      intermediate: ["Please close the door fully and press the reset button.", "Close the door, confirm the interlock, then press reset."],
+      advanced: ["We need to close the door, confirm the interlock light, and reset the safety relay before starting.", "Once the door is closed and the interlock light is on, I will reset the safety circuit."]
     }
   ],
   factory: [
@@ -160,6 +277,18 @@ const phraseBank = {
       beginner: ["I want to check it safely.", "Safety first. Let me check it."],
       intermediate: ["I want to check this safely before we restart.", "Let me inspect it safely before the next run."],
       advanced: ["I would like to inspect this safely before we restart the line.", "A short safety check now can prevent another issue during the next run."]
+    },
+    {
+      ko: "오늘 완료한 작업을 보고드리겠습니다.",
+      beginner: ["Today we finished the setup and the test.", "We completed the setup today."],
+      intermediate: ["Today we completed the setup and a full test cycle.", "We finished the mechanical setup and the I/O check today."],
+      advanced: ["Today we completed the mechanical setup, the I/O check, and a full test cycle.", "We closed out the setup, verified the I/O, and ran one full cycle without faults."]
+    },
+    {
+      ko: "남은 항목과 다음 단계를 설명드리겠습니다.",
+      beginner: ["One item is left for tomorrow.", "We will finish the rest tomorrow."],
+      intermediate: ["One adjustment is still open, and we plan to finish it tomorrow.", "There is one open item, and we will close it tomorrow morning."],
+      advanced: ["One minor sensor adjustment is still open, and we plan to close it tomorrow before final sign-off.", "We have one open item to address tomorrow, then we are ready for the final sign-off."]
     }
   ],
   daily: [
@@ -209,7 +338,12 @@ const dailyMissions = [
   { id: "wiring", label: "Wiring Check", track: "troubleshooting", scenario: 0 },
   { id: "handover", label: "Handover Ready", track: "automation", scenario: 1 },
   { id: "maintenance", label: "Ask Maintenance", track: "factory", scenario: 0 },
-  { id: "daily", label: "Detroit Daily", track: "daily", scenario: 0 }
+  { id: "daily", label: "Detroit Daily", track: "daily", scenario: 0 },
+  { id: "plc", label: "PLC I/O Check", track: "troubleshooting", scenario: 1 },
+  { id: "robot", label: "Robot Home Position", track: "automation", scenario: 2 },
+  { id: "conveyor", label: "Conveyor Jam", track: "troubleshooting", scenario: 2 },
+  { id: "safety", label: "Safety Interlock", track: "troubleshooting", scenario: 3 },
+  { id: "handover-meeting", label: "Customer Handover Meeting", track: "factory", scenario: 1 }
 ];
 
 const state = {
@@ -269,11 +403,12 @@ function renderProgress() {
   const completed = getCompletedMissions().length;
   const activeCount = Math.max(completed, state.missionIndex + 1);
   const percent = Math.round((completed / dailyMissions.length) * 100);
-  const remaining = Math.max(0, dailyMissions.length - activeCount) * 6;
+  const minutesPerMission = Math.max(1, Math.round(state.duration / dailyMissions.length));
+  const remaining = Math.max(0, dailyMissions.length - activeCount) * minutesPerMission;
   $("#missionProgress").textContent = `${completed}/${dailyMissions.length}`;
-  $("#remainingTime").textContent = `${remaining || 6}분`;
+  $("#remainingTime").textContent = `${remaining || minutesPerMission}분`;
   $("#progressFill").style.width = `${percent}%`;
-  $("#reviewCount").textContent = getReviewItems().length;
+  $("#reviewCount").textContent = getDueReviewItems().length;
   $("#streakDays").textContent = localStorage.getItem("fieldspeak-streak") || "0";
   renderCompleteButton();
 }
@@ -390,6 +525,9 @@ function speak(text, rate = 0.85) {
   window.speechSynthesis.speak(utterance);
 }
 
+const LEITNER_INTERVAL_DAYS = [1, 3, 7, 14, 30];
+const MAX_BOX = LEITNER_INTERVAL_DAYS.length;
+
 function getReviewItems() {
   return JSON.parse(localStorage.getItem("fieldspeak-review") || "[]");
 }
@@ -398,30 +536,95 @@ function setReviewItems(items) {
   localStorage.setItem("fieldspeak-review", JSON.stringify(items));
 }
 
+function dateOffset(days) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function migrateReviewItems() {
+  const items = getReviewItems();
+  let changed = false;
+  for (const item of items) {
+    if (typeof item.box !== "number") { item.box = 1; changed = true; }
+    if (!item.dueDate) { item.dueDate = todayKey(); changed = true; }
+    if (!("lastResult" in item)) { item.lastResult = null; changed = true; }
+  }
+  if (changed) setReviewItems(items);
+}
+
+function getDueReviewItems() {
+  const today = todayKey();
+  return getReviewItems()
+    .map((item, index) => ({ ...item, _index: index }))
+    .filter((item) => (item.dueDate || today) <= today)
+    .sort((a, b) => (a.dueDate || "").localeCompare(b.dueDate || ""));
+}
+
+function markReviewResult(index, result) {
+  const items = getReviewItems();
+  if (!items[index]) return;
+  const item = items[index];
+  if (result === "known") {
+    item.box = Math.min(MAX_BOX, (item.box || 1) + 1);
+  } else {
+    item.box = 1;
+  }
+  item.lastResult = result;
+  item.dueDate = dateOffset(LEITNER_INTERVAL_DAYS[item.box - 1]);
+  setReviewItems(items);
+  renderReview();
+}
+
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, (ch) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[ch]);
+}
+
 function renderReview() {
   const items = getReviewItems();
+  const due = getDueReviewItems();
   const logs = getStudyLogs();
-  const reviewMarkup = items.length
+  const dueMarkup = due.length
+    ? due.map((item) => `
+      <div class="review-item due-item">
+        <strong>${escapeHtml(item.text)}</strong>
+        <small>${escapeHtml(item.mission)} · ${escapeHtml(item.level)} · <span class="box-badge">Box ${item.box || 1}</span></small>
+        <div class="review-actions">
+          <button class="known" data-review-index="${item._index}" data-result="known" type="button">알았어요</button>
+          <button class="again" data-review-index="${item._index}" data-result="again" type="button">다시</button>
+        </div>
+      </div>
+    `).join("")
+    : '<p class="empty-state">오늘 복습할 문장이 없습니다. 좋은 페이스를 유지하고 있어요.</p>';
+  const upcomingMarkup = items.length
     ? items.map((item) => `
       <div class="review-item">
-        <strong>${item.text}</strong>
-        <small>${item.mission} · ${item.level} · ${item.date}</small>
+        <strong>${escapeHtml(item.text)}</strong>
+        <small>${escapeHtml(item.mission)} · ${escapeHtml(item.level)} · <span class="box-badge">Box ${item.box || 1}</span> · 다음 ${escapeHtml(item.dueDate || todayKey())}</small>
       </div>
     `).join("")
     : '<p class="empty-state">아직 저장된 복습 문장이 없습니다. 피드백을 받은 뒤 Review Queue에 저장하면 다음 학습 때 다시 나옵니다.</p>';
   const logMarkup = logs.length
     ? logs.slice(0, 10).map((log) => `
       <div class="review-item">
-        <strong>${log.mission} 완료</strong>
-        <small>${log.level} · ${log.date}</small>
+        <strong>${escapeHtml(log.mission)} 완료</strong>
+        <small>${escapeHtml(log.level)} · ${escapeHtml(log.date)}</small>
       </div>
     `).join("")
     : '<p class="empty-state">아직 완료한 미션이 없습니다. 홈에서 미션 완료를 눌러 기록을 쌓아보세요.</p>';
   $("#reviewList").innerHTML = `
+    <h3 class="history-title">오늘 복습할 문장 ${due.length}개</h3>
+    ${dueMarkup}
     <h3 class="history-title">완료한 미션</h3>
     ${logMarkup}
-    <h3 class="history-title">복습 Queue</h3>
-    ${reviewMarkup}
+    <h3 class="history-title">복습 Queue 전체</h3>
+    ${upcomingMarkup}
   `;
   renderProgress();
 }
@@ -495,7 +698,10 @@ function saveForReview() {
     text: state.lastCorrection,
     mission: activeMission().label,
     level: levelLabels[state.level],
-    date: new Date().toLocaleDateString("ko-KR")
+    date: new Date().toLocaleDateString("ko-KR"),
+    box: 1,
+    dueDate: todayKey(),
+    lastResult: null
   });
   setReviewItems(items.slice(0, 30));
   updateStreak();
@@ -613,6 +819,12 @@ $("#clearReview").addEventListener("click", () => {
   renderReview();
 });
 
+$("#reviewList").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-review-index]");
+  if (!button) return;
+  markReviewResult(Number(button.dataset.reviewIndex), button.dataset.result);
+});
+
 $("#completeMission").addEventListener("click", completeMission);
 
 window.addEventListener("beforeinstallprompt", (event) => {
@@ -644,5 +856,6 @@ if ("serviceWorker" in navigator && location.protocol !== "file:") {
 }
 
 loadSettings();
+migrateReviewItems();
 renderScenario();
 renderReview();

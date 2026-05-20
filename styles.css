@@ -648,6 +648,46 @@ textarea {
   color: var(--muted);
 }
 
+.due-item {
+  border-color: rgba(36, 122, 85, 0.35);
+  background: rgba(130, 216, 176, 0.14);
+}
+
+body.dark .due-item {
+  background: rgba(130, 216, 176, 0.1);
+}
+
+.box-badge {
+  display: inline-block;
+  margin: 0 4px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(92, 166, 214, 0.18);
+  color: #255f85;
+  font-size: 0.68rem;
+  font-weight: 760;
+}
+
+.review-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.review-actions button {
+  flex: 1;
+  min-height: 34px;
+  font-size: 0.82rem;
+}
+
+.review-actions .known {
+  background: var(--green);
+}
+
+.review-actions .again {
+  background: rgba(233, 120, 84, 0.85);
+}
+
 .settings-list label {
   color: var(--muted);
   font-weight: 780;
