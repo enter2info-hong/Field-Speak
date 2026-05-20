@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#18231f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="FieldSpeak">
+    <title>FieldSpeak - Detroit Setup English</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="phone-shell">
+      <section class="app-screen">
+        <header class="progress-strip" aria-label="today progress">
+          <div class="brand-row">
+            <div>
+              <p class="eyebrow">FieldSpeak</p>
+              <h1>오늘 45분</h1>
+            </div>
+            <button id="themeToggle" class="round-button" type="button" aria-label="다크 모드 전환">◐</button>
+          </div>
+          <div class="stat-grid">
+            <div>
+              <span id="missionProgress">1/5</span>
+              <small>미션</small>
+            </div>
+            <div>
+              <span id="remainingTime">12분</span>
+              <small>남음</small>
+            </div>
+            <div>
+              <span id="streakDays">0</span>
+              <small>streak</small>
+            </div>
+          </div>
+          <div class="progress-track">
+            <span id="progressFill"></span>
+          </div>
+        </header>
+
+        <section class="mission-panel page-section active" id="homePage">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Daily Field Mission</p>
+              <h2>오늘의 현장 미션</h2>
+            </div>
+            <select id="level" aria-label="난이도">
+              <option value="beginner">초급</option>
+              <option value="intermediate">중급</option>
+              <option value="advanced">고급</option>
+            </select>
+          </div>
+
+          <div class="mission-chips" id="missionChips"></div>
+
+          <article class="mission-card">
+            <div>
+              <span class="mission-label" id="activeTrackLabel">Automation Setup</span>
+              <h3 id="sessionTitle">Sensor Check</h3>
+              <p id="scenarioKorean"></p>
+            </div>
+            <button id="nextMission" class="small-action" type="button">다음 미션</button>
+          </article>
+
+          <section class="deck-wrap" aria-label="today expression deck">
+            <div class="deck-shadow third"></div>
+            <div class="deck-shadow second"></div>
+            <article class="expression-card" id="expressionCard">
+              <div class="card-topline">
+                <span id="expressionCounter">1 / 3</span>
+                <button id="nextExpression" class="text-button" type="button">스와이프</button>
+              </div>
+              <p class="meaning" id="expressionKo"></p>
+              <h2 id="expressionMain"></h2>
+              <p class="alternate" id="expressionAlt"></p>
+              <div class="listen-row">
+                <button class="listen-button" id="phraseSlow" type="button">천천히</button>
+                <button class="listen-button" id="phraseNormal" type="button">보통</button>
+                <button class="listen-button" id="phraseFast" type="button">현지 속도</button>
+              </div>
+              <small>스와이프해서 다음 표현</small>
+            </article>
+          </section>
+
+          <section class="step-row" aria-label="3 step clear">
+            <button class="step done" id="stepListen" type="button">듣기</button>
+            <button class="step done" id="stepRepeat" type="button">따라 말하기</button>
+            <button class="step active" id="stepRoleplay" type="button">롤플레이</button>
+          </section>
+
+          <button id="completeMission" class="complete-button" type="button">미션 완료</button>
+
+          <section class="coach-panel">
+            <div class="coach-avatar">AI</div>
+            <div>
+              <p class="eyebrow">AI Coach</p>
+              <p id="coachPrompt"></p>
+            </div>
+          </section>
+
+          <section class="habit-row">
+            <div>
+              <strong id="confidenceScore">72%</strong>
+              <span>Confidence</span>
+            </div>
+            <div>
+              <strong id="reviewCount">0</strong>
+              <span>Review Queue</span>
+            </div>
+            <div>
+              <strong>3-Step</strong>
+              <span>Clear</span>
+            </div>
+          </section>
+
+          <section class="emergency-panel">
+            <button id="emergencyToggle" class="emergency-title" type="button">긴급 표현</button>
+            <div class="emergency-list" id="emergencyList">
+              <button data-text="Could you say that again slowly?" type="button">Say that again slowly</button>
+              <button data-text="I need five more minutes." type="button">I need five more minutes</button>
+            </div>
+          </section>
+        </section>
+
+        <section class="page-section" id="historyPage">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Review Queue</p>
+              <h2>학습기록</h2>
+            </div>
+            <button id="clearReview" class="text-button" type="button">초기화</button>
+          </div>
+          <div id="reviewList" class="review-list"></div>
+        </section>
+
+        <section class="page-section" id="settingsPage">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Settings</p>
+              <h2>설정</h2>
+            </div>
+          </div>
+          <div class="settings-list">
+            <label>
+              학습 시간
+              <select id="duration">
+                <option value="30">30분 세션</option>
+                <option value="45" selected>45분 세션</option>
+                <option value="60">60분 세션</option>
+              </select>
+            </label>
+            <label>
+              상황 카테고리
+              <select id="track">
+                <option value="automation">Automation Setup</option>
+                <option value="troubleshooting">Troubleshooting</option>
+                <option value="factory">Factory Communication</option>
+                <option value="daily">Daily Life in Detroit</option>
+                <option value="smalltalk">Business Small Talk</option>
+              </select>
+            </label>
+            <button id="installApp" class="install-button hidden" type="button">홈 화면에 설치</button>
+          </div>
+        </section>
+
+        <section class="feedback-panel hidden" id="feedbackPanel" aria-live="polite">
+          <p class="eyebrow">Feedback</p>
+          <h3 id="feedbackTitle"></h3>
+          <p id="feedbackBody"></p>
+          <div class="correction">
+            <span>다시 말할 문장</span>
+            <strong id="correctionText"></strong>
+          </div>
+          <button id="saveReview" type="button">복습 Queue에 저장</button>
+        </section>
+
+        <section class="input-dock" aria-label="speaking controls">
+          <div class="dock-actions">
+            <button id="playPromptNormal" type="button">듣기</button>
+            <button id="micButton" class="mic-button" type="button" aria-label="말하기">●</button>
+            <button id="toggleInput" type="button">입력</button>
+          </div>
+          <div class="answer-area hidden" id="answerArea">
+            <textarea id="userAnswer" rows="3" placeholder="영어로 답변해보세요."></textarea>
+            <div class="answer-actions">
+              <button id="hintButton" class="secondary" type="button">힌트</button>
+              <button id="submitAnswer" type="button">피드백</button>
+            </div>
+          </div>
+        </section>
+
+        <nav class="tab-bar" aria-label="main tabs">
+          <button class="tab active" data-page="homePage" type="button"><span>⌂</span>홈</button>
+          <button class="tab" data-page="historyPage" type="button"><span>◷</span>학습기록</button>
+          <button class="tab" data-page="settingsPage" type="button"><span>⚙</span>설정</button>
+        </nav>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

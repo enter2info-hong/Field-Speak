@@ -1,0 +1,17 @@
+{
+  "name": "FieldSpeak - Detroit Setup English",
+  "short_name": "FieldSpeak",
+  "description": "Daily English speaking missions for automation equipment setup work.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#111a17",
+  "theme_color": "#18231f",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
