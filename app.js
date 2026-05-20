@@ -517,6 +517,22 @@ function showFeedback(feedback) {
   $("#feedbackTitle").textContent = feedback.title;
   $("#feedbackBody").textContent = feedback.body;
   $("#correctionText").textContent = feedback.correction;
+  const accuracy = clampScore(feedback.accuracy);
+  const fluency = clampScore(feedback.fluency);
+  const overall = clampScore(feedback.overall);
+  const scoreContainer = $("#feedbackScores");
+  if (scoreContainer) {
+    if (accuracy === null && fluency === null && overall === null) {
+      scoreContainer.classList.add("hidden");
+      scoreContainer.innerHTML = "";
+    } else {
+      const chip = (label, value) => value === null
+        ? ""
+        : `<span class="score-chip"><strong>${value}</strong><small>${label}</small></span>`;
+      scoreContainer.innerHTML = `${chip("종합", overall)}${chip("정확도", accuracy)}${chip("유창성", fluency)}`;
+      scoreContainer.classList.remove("hidden");
+    }
+  }
   $("#feedbackPanel").classList.remove("hidden");
 }
 
@@ -538,8 +554,11 @@ async function getAIFeedback(answer) {
 - title: 한국어 한 줄 평가 (40자 이내)
 - body: 한국어 1~2문장. 잘한 점과 개선 포인트를 구체적으로
 - correction: 사용자의 답변을 자연스럽게 다듬은 영어 문장. 답변이 비었으면 목표 문장을 그대로
+- accuracy: 0~100 정수. 목표 의미를 얼마나 정확히 전달했는지
+- fluency: 0~100 정수. 영어 문장이 얼마나 자연스러운지
+- overall: 0~100 정수. 현장에서 통할 수준인지 종합
 
-형식: {"title":"...","body":"...","correction":"..."}`;
+형식: {"title":"...","body":"...","correction":"...","accuracy":0,"fluency":0,"overall":0}`;
 
   const response = await fetch(`${GEMINI_ENDPOINT}?key=${encodeURIComponent(state.aiKey)}`, {
     method: "POST",
@@ -569,9 +588,15 @@ async function getAIFeedback(answer) {
   if (!parsed.title || !parsed.body || !parsed.correction) {
     throw new Error("AI 응답에 필수 필드가 없습니다.");
   }
-  const score = Math.round(78 + Math.random() * 14);
-  $("#confidenceScore").textContent = `${score}%`;
+  const overall = clampScore(parsed.overall);
+  if (overall !== null) $("#confidenceScore").textContent = `${overall}%`;
   return parsed;
+}
+
+function clampScore(value) {
+  const n = Math.round(Number(value));
+  if (!Number.isFinite(n)) return null;
+  return Math.max(0, Math.min(100, n));
 }
 
 async function renderFeedback() {

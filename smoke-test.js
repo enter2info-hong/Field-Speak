@@ -23,7 +23,8 @@ const requiredHtmlIds = [
   "exportData",
   "importData",
   "ttsEnabled",
-  "ttsVoice"
+  "ttsVoice",
+  "feedbackScores"
 ];
 
 const requiredJsTokens = [
@@ -51,6 +52,8 @@ const requiredJsTokens = [
   "EXPORT_KEYS",
   "async function speakCloud",
   "CLOUD_TTS_ENDPOINT",
+  "function clampScore",
+  "score-chip",
   "serviceWorker",
   "beforeinstallprompt"
 ];

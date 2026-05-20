@@ -501,6 +501,36 @@ body.dark .expression-card {
   margin-bottom: 8px;
 }
 
+.feedback-scores {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.score-chip {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 6px 4px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(130, 216, 176, 0.14);
+  text-align: center;
+}
+
+.score-chip strong {
+  display: block;
+  font-size: 1.05rem;
+  color: var(--green);
+}
+
+.score-chip small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.66rem;
+  margin-top: 2px;
+}
+
 .feedback-panel p {
   color: var(--muted);
   line-height: 1.45;
