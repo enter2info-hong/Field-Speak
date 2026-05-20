@@ -1,0 +1,25 @@
+{
+  "name": "copy",
+  "version": "1.0.0",
+  "description": "FieldSpeak is a mobile-first English speaking study app for an automation equipment setup engineer on a business trip in Detroit.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enter2info-hong/Field-Speak.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/enter2info-hong/Field-Speak/issues"
+  },
+  "homepage": "https://github.com/enter2info-hong/Field-Speak#readme",
+  "devDependencies": {
+    "sharp": "^0.34.5"
+  }
+}
