@@ -164,6 +164,15 @@
                 <option value="smalltalk">Business Small Talk</option>
               </select>
             </label>
+            <label class="ai-toggle">
+              AI Coach 사용 (Gemini)
+              <input id="aiEnabled" type="checkbox">
+            </label>
+            <label>
+              Gemini API 키
+              <input id="aiKey" type="password" autocomplete="off" placeholder="ai.google.dev에서 발급">
+              <small class="setting-note">키는 이 기기에만 저장됩니다. 답변 문장은 Google Gemini로 전송되어 평가됩니다.</small>
+            </label>
             <button id="installApp" class="install-button hidden" type="button">홈 화면에 설치</button>
           </div>
         </section>

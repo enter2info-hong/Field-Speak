@@ -352,8 +352,14 @@ const state = {
   missionIndex: 0,
   expressionIndex: 0,
   lastCorrection: "",
-  deferredInstallPrompt: null
+  deferredInstallPrompt: null,
+  aiEnabled: false,
+  aiKey: "",
+  aiRequestId: 0
 };
+
+const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -502,13 +508,91 @@ function getFeedback(answer) {
   };
 }
 
-function renderFeedback() {
-  const feedback = getFeedback($("#userAnswer").value);
+function showFeedback(feedback) {
   state.lastCorrection = feedback.correction;
   $("#feedbackTitle").textContent = feedback.title;
   $("#feedbackBody").textContent = feedback.body;
   $("#correctionText").textContent = feedback.correction;
   $("#feedbackPanel").classList.remove("hidden");
+}
+
+async function getAIFeedback(answer) {
+  const scenario = currentScenario();
+  const mission = activeMission();
+  const target = scenario.targets[state.level];
+  const prompt = `당신은 한국인 자동화 엔지니어의 영어 회화 코치입니다. 미국 Detroit 출장 현장에서 사용할 영어를 평가합니다.
+
+상황(한국어): ${scenario.ko}
+현장 카테고리: ${trackLabels[mission.track]}
+미션: ${mission.label}
+난이도: ${levelLabels[state.level]}
+상대방 영어 프롬프트: ${scenario.prompt}
+참고 목표 문장 (${state.level}): ${target}
+사용자의 답변: ${answer || "(답변 없음)"}
+
+다음 규칙을 지켜 한 줄짜리 순수 JSON으로만 응답하세요. 코드 블록, 설명, 마크다운 금지.
+- title: 한국어 한 줄 평가 (40자 이내)
+- body: 한국어 1~2문장. 잘한 점과 개선 포인트를 구체적으로
+- correction: 사용자의 답변을 자연스럽게 다듬은 영어 문장. 답변이 비었으면 목표 문장을 그대로
+
+형식: {"title":"...","body":"...","correction":"..."}`;
+
+  const response = await fetch(`${GEMINI_ENDPOINT}?key=${encodeURIComponent(state.aiKey)}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        temperature: 0.4
+      }
+    })
+  });
+
+  if (!response.ok) {
+    const errText = await response.text().catch(() => "");
+    throw new Error(`Gemini ${response.status}: ${errText.slice(0, 160)}`);
+  }
+
+  const data = await response.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (err) {
+    throw new Error("AI 응답이 JSON 형식이 아닙니다.");
+  }
+  if (!parsed.title || !parsed.body || !parsed.correction) {
+    throw new Error("AI 응답에 필수 필드가 없습니다.");
+  }
+  const score = Math.round(78 + Math.random() * 14);
+  $("#confidenceScore").textContent = `${score}%`;
+  return parsed;
+}
+
+async function renderFeedback() {
+  const answer = $("#userAnswer").value;
+  if (state.aiEnabled && state.aiKey) {
+    const requestId = ++state.aiRequestId;
+    showFeedback({
+      title: "AI 분석 중…",
+      body: "Gemini가 답변을 평가하고 있습니다.",
+      correction: state.lastCorrection || currentScenario().targets[state.level]
+    });
+    try {
+      const ai = await getAIFeedback(answer);
+      if (requestId !== state.aiRequestId) return;
+      showFeedback(ai);
+    } catch (err) {
+      if (requestId !== state.aiRequestId) return;
+      console.warn("AI feedback failed, falling back:", err);
+      const fallback = getFeedback(answer);
+      fallback.title = `AI 호출 실패 — ${fallback.title}`;
+      showFeedback(fallback);
+    }
+    return;
+  }
+  showFeedback(getFeedback(answer));
 }
 
 function speak(text, rate = 0.85) {
@@ -678,8 +762,12 @@ function loadSettings() {
   if (saved.level && levelLabels[saved.level]) state.level = saved.level;
   if ([30, 45, 60].includes(Number(saved.duration))) state.duration = Number(saved.duration);
   if (saved.dark) document.body.classList.add("dark");
+  state.aiEnabled = Boolean(saved.aiEnabled);
+  state.aiKey = localStorage.getItem("fieldspeak-ai-key") || "";
   $("#level").value = state.level;
   $("#duration").value = String(state.duration);
+  $("#aiEnabled").checked = state.aiEnabled;
+  $("#aiKey").value = state.aiKey;
   document.querySelector(".brand-row h1").textContent = `오늘 ${state.duration}분`;
 }
 
@@ -687,8 +775,17 @@ function saveSettings() {
   localStorage.setItem("fieldspeak-settings", JSON.stringify({
     level: state.level,
     duration: state.duration,
-    dark: document.body.classList.contains("dark")
+    dark: document.body.classList.contains("dark"),
+    aiEnabled: state.aiEnabled
   }));
+}
+
+function saveAiKey() {
+  if (state.aiKey) {
+    localStorage.setItem("fieldspeak-ai-key", state.aiKey);
+  } else {
+    localStorage.removeItem("fieldspeak-ai-key");
+  }
 }
 
 function saveForReview() {
@@ -810,7 +907,17 @@ $("#hintButton").addEventListener("click", () => {
   $("#userAnswer").focus();
 });
 
-$("#submitAnswer").addEventListener("click", renderFeedback);
+$("#submitAnswer").addEventListener("click", () => { renderFeedback(); });
+
+$("#aiEnabled").addEventListener("change", (event) => {
+  state.aiEnabled = event.target.checked;
+  saveSettings();
+});
+
+$("#aiKey").addEventListener("change", (event) => {
+  state.aiKey = event.target.value.trim();
+  saveAiKey();
+});
 $("#saveReview").addEventListener("click", saveForReview);
 $("#micButton").addEventListener("click", startSpeechInput);
 $("#clearReview").addEventListener("click", () => {

@@ -17,7 +17,9 @@ const requiredHtmlIds = [
   "coachPrompt",
   "reviewList",
   "installApp",
-  "micButton"
+  "micButton",
+  "aiEnabled",
+  "aiKey"
 ];
 
 const requiredJsTokens = [
@@ -37,6 +39,9 @@ const requiredJsTokens = [
   "function getDueReviewItems",
   "function markReviewResult",
   "LEITNER_INTERVAL_DAYS",
+  "async function getAIFeedback",
+  "GEMINI_MODEL",
+  "fieldspeak-ai-key",
   "serviceWorker",
   "beforeinstallprompt"
 ];

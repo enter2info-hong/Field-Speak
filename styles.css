@@ -705,6 +705,44 @@ body.dark .due-item {
   min-height: 44px;
 }
 
+.ai-toggle {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ai-toggle input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}
+
+.settings-list input[type="password"] {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--ink);
+  font: inherit;
+}
+
+body.dark .settings-list input[type="password"] {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.setting-note {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
 @media (max-width: 460px) {
   .phone-shell {
     padding: 0;
